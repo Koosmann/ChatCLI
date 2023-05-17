@@ -1,11 +1,22 @@
 import { Command } from "commander";
 import { Configuration, OpenAIApi } from "openai";
 import * as rl from "readline-sync";
+import fs from "fs";
 
 const commander = new Command();
-if (process.env.APIKEY === undefined) {
-  console.error("APIKEY env var required.");
-  process.exit(1);
+let apiKey: string;
+
+// Check if api.key file exists
+if (fs.existsSync('api.key')) {
+    // If it does, read the API key from the file
+    apiKey = fs.readFileSync('api.key', 'utf8');
+} else {
+    // If it doesn't, prompt the user for the API key
+    console.log("API key is required.");
+    apiKey = rl.question("Please enter your API key: ", { hideEchoBack: true });
+
+    // Save the API key to the api.key file for future use
+    fs.writeFileSync('api.key', apiKey);
 }
 
 commander
